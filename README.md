@@ -84,7 +84,7 @@ npm start
 npm run dev
 ```
 
-The backend will run at: **http://localhost:5000**
+The backend will run at: **http://localhost:5001**
 
 ---
 
@@ -98,7 +98,53 @@ npm start
 
 The app will open at: **http://localhost:3000**
 
-> The frontend is pre-configured to proxy API calls to `localhost:5000`.
+---
+
+## 🚀 Deploying to Vercel
+
+### Option 1 — Unified Deployment (Recommended)
+
+This project is configured for a single-project deployment on Vercel.
+
+1. Import this repository into Vercel.
+2. In the **Project Settings**, add the following **Environment Variables**:
+   - `SUPABASE_URL`: Your Supabase Project URL.
+   - `SUPABASE_ANON_KEY`: Your Supabase anon key.
+   - `REACT_APP_API_URL`: `/api` (this tells the frontend to use the serverless backend).
+3. Vercel will use the `vercel.json` file to build both the frontend and the backend.
+
+### Option 2 — Separate Deployments
+
+If you want to deploy the frontend and backend as separate projects:
+
+#### 1. Backend Deployment
+- Create a new project in Vercel.
+- Point it to the `backend/` directory.
+- Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` to the backend environment variables.
+- The backend will have its own URL (e.g., `https://my-backend.vercel.app`).
+
+#### 2. Frontend Deployment
+- Create a new project in Vercel.
+- Point it to the `frontend/` directory.
+- Add `REACT_APP_API_URL`: `https://my-backend.vercel.app` (your backend URL).
+- The frontend will then connect to your deployed backend.
+
+### CLI Deployment
+
+```bash
+# Deploy entire project (unified)
+vercel
+
+# Deploy backend only
+cd backend && vercel
+
+# Deploy frontend only
+cd frontend && vercel
+```
+
+---
+
+> The frontend is pre-configured to proxy API calls to `localhost:5001`.
 
 ---
 

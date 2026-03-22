@@ -17,6 +17,21 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY'
 );
 
+// ─── HEALTH CHECK & ROOT ───────────────────────────────────────────────────
+
+app.get('/health', (req, res) => res.json({ 
+  status: 'ok', 
+  timestamp: new Date().toISOString(),
+  deployment: 'v3-final'
+}));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+
+app.get('/', (req, res) => res.json({ 
+  message: 'Employee Engagement API is running',
+  version: '1.0.0',
+  endpoints: ['/master', '/planner', '/regions', '/budget-utilisation', '/reports', '/health']
+}));
+
 // ─── MASTER ROUTES ────────────────────────────────────────────────────────────
 
 // GET /master - Fetch all master records
@@ -292,6 +307,13 @@ app.get('/reports', async (req, res) => {
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
+// Root route
+app.get('/', (req, res) => res.json({ 
+  message: 'Employee Engagement API is running',
+  version: '1.0.0',
+  endpoints: ['/master', '/planner', '/regions', '/budget-utilisation', '/reports', '/health']
+}));
+
 // ─── PLANNED VS ACTUAL ROUTES ─────────────────────────────────────────────────
 
 // GET /planned-vs-actual/:planner_id - Get actual record for a planner event
@@ -385,4 +407,8 @@ app.delete('/planned-vs-actual/doc', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+}
+
+module.exports = app;
