@@ -57,6 +57,15 @@ body {
   min-height: 100vh;
 }
 
+.app-layout.no-sidebar .sidebar {
+  display: none;
+}
+
+.app-layout.no-sidebar .main-content {
+  margin-left: 0;
+  width: 100%;
+}
+
 .sidebar {
   width: var(--sidebar-w);
   background: var(--surface);

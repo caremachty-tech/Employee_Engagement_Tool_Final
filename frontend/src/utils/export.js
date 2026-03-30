@@ -25,7 +25,7 @@ export const exportToExcel = (data, filename = 'export') => {
       'Total Amount (₹)': parseFloat(r.total_amount) || 0,
       'Date Created': fmtExcelDate(r.created_at)
     }));
-  } else if (filename === 'planner') {
+  } else if (filename === 'planner' || filename === 'planner_vs_poster' || filename === 'planned_vs_scheduled') {
     rows = data.map((r, i) => ({
       '#': i + 1,
       'Region': r.region || '',
@@ -42,7 +42,51 @@ export const exportToExcel = (data, filename = 'export') => {
       'Poster Required Date': fmtExcelDate(r.poster_required_date),
       'No of Posters/Emails': r.no_of_posters_emails ?? '',
       'Requirement to Marketing': r.requirement_to_marketing || '',
-      'Activities Planned': r.plan_of_activity || ''
+      'Activities Planned': r.plan_of_activity || '',
+      ...(filename === 'planner_vs_poster' ? { 'Poster Uploaded': r.has_posters ? 'Yes' : 'No' } : {}),
+      ...(filename === 'planned_vs_scheduled' ? { 'Scheduled': r.is_scheduled ? 'Yes' : 'No' } : {})
+    }));
+  } else if (filename === 'planned_vs_actual') {
+    rows = data.map((r, i) => ({
+      '#': i + 1,
+      'Region': r.region || '',
+      'Event Name': r.event_name || '',
+      'Event Date': fmtExcelDate(r.event_date),
+      'Actual Date': fmtExcelDate(r.actual_date),
+      'Actual Time': r.actual_time || '',
+      'Participants': r.num_participants ?? '',
+      'Amount Spent (₹)': parseFloat(r.amount_spent) || 0,
+      'Documents Count': (r.supporting_docs || []).length
+    }));
+  } else if (filename === 'budget_utilisation') {
+    rows = data.map((r, i) => ({
+      '#': i + 1,
+      'Region': r.region || '',
+      'Total Budget (₹)': parseFloat(r.total_amount) || 0,
+      'Utilised Amount (₹)': parseFloat(r.utilised_amount) || 0,
+      'Balance Amount (₹)': parseFloat(r.balance_amount) || 0,
+      'Utilisation %': r.total_amount > 0 ? ((r.utilised_amount / r.total_amount) * 100).toFixed(2) + '%' : '0%'
+    }));
+  } else if (filename === 'reports') {
+    rows = data.map((r, i) => ({
+      '#': i + 1,
+      'Region': r.region || '',
+      'Event Type': r.event_type || '',
+      'Event Name': r.event_name || '',
+      'Planned Date': fmtExcelDate(r.event_date),
+      'Actual Date': fmtExcelDate(r.actual_date),
+      'Participants': r.num_participants ?? '',
+      'Amount Spent (₹)': parseFloat(r.amount_spent) || 0
+    }));
+  } else if (filename === 'scheduled_mails') {
+    rows = data.map((r, i) => ({
+      '#': i + 1,
+      'Recipient (To)': r.to || '',
+      'Subject': r.subject || '',
+      'Mail Date': fmtExcelDate(r.date),
+      'Mail Time': r.time || '',
+      'Events': (r.events || []).map(e => e.event_name).join(', '),
+      'Email Content': r.email_content || ''
     }));
   } else {
     rows = data;

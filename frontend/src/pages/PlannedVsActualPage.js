@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { FiCalendar, FiSearch, FiX, FiUpload } from 'react-icons/fi';
+import { FiCalendar, FiSearch, FiX, FiUpload, FiDownload } from 'react-icons/fi';
 import { getPlanner, getActual, saveActual, deleteActualDoc } from '../utils/api';
+import { exportToExcel } from '../utils/export';
 
 const EVENT_TYPES = ['Birthday', 'Special Day', 'Festival', 'Webinar'];
 
@@ -231,6 +232,11 @@ export default function PlannedVsActualPage() {
     <>
       <div className="page-header">
         <div><h2>Planned vs Actual</h2></div>
+        <div className="page-header-actions">
+          <button className="btn btn-success btn-sm" onClick={() => exportToExcel(records, 'planned_vs_actual')}>
+            <FiDownload /> Export
+          </button>
+        </div>
       </div>
 
       <div className="page-body">

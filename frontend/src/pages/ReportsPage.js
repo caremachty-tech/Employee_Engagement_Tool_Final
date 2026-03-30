@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { FiDownload, FiX, FiFileText } from 'react-icons/fi';
-import * as XLSX from 'xlsx';
 import { getReports } from '../utils/api';
+import { exportToExcel } from '../utils/export';
 
 const fmtExcelDate = (d) => {
   if (!d) return '';
@@ -25,7 +25,7 @@ export default function ReportsPage() {
     try {
       const res = await getReports();
       setRecords(res.data.data || []);
-    } catch { toast.error('Failed to load reports'); }
+    } catch { toast.error('git initFailed to load reports'); }
     setLoading(false);
   }, []);
 
@@ -64,6 +64,11 @@ export default function ReportsPage() {
     <>
       <div className="page-header">
         <div><h2>Reports</h2></div>
+        <div className="page-header-actions">
+          <button className="btn btn-success btn-sm" onClick={() => exportToExcel(filtered, 'reports')} disabled={filtered.length === 0}>
+            <FiDownload /> Export
+          </button>
+        </div>
       </div>
 
       <div className="page-body">
@@ -73,9 +78,6 @@ export default function ReportsPage() {
               <div className="card-title">Event Reports</div>
               <div className="card-subtitle">{filtered.length} record{filtered.length !== 1 ? 's' : ''} with actual date</div>
             </div>
-            <button className="btn btn-secondary" onClick={handleExport} disabled={filtered.length === 0}>
-              <FiDownload /> Export Excel
-            </button>
           </div>
 
           <div className="action-row" style={{ flexWrap: 'wrap', gap: 10 }}>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { FiSearch, FiUsers } from 'react-icons/fi';
+import { FiSearch, FiUsers, FiDownload } from 'react-icons/fi';
 import { getBudgetUtilisation } from '../utils/api';
+import { exportToExcel } from '../utils/export';
 
 export default function BudgetUtilisationPage() {
   const [records, setRecords] = useState([]);
@@ -41,6 +42,11 @@ export default function BudgetUtilisationPage() {
     <>
       <div className="page-header">
         <div><h2>Budget Utilisation</h2></div>
+        <div className="page-header-actions">
+          <button className="btn btn-success btn-sm" onClick={() => exportToExcel(records, 'budget_utilisation')}>
+            <FiDownload /> Export
+          </button>
+        </div>
       </div>
 
       <div className="page-body">

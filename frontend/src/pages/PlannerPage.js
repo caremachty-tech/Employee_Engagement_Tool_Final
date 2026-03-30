@@ -290,6 +290,22 @@ export default function PlannerPage({ onMenuClick }) {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterRegion, setFilterRegion] = useState('');
+  const [filterMonth, setFilterMonth] = useState('');
+
+  const months = [
+    { value: '0', label: 'January' },
+    { value: '1', label: 'February' },
+    { value: '2', label: 'March' },
+    { value: '3', label: 'April' },
+    { value: '4', label: 'May' },
+    { value: '5', label: 'June' },
+    { value: '6', label: 'July' },
+    { value: '7', label: 'August' },
+    { value: '8', label: 'September' },
+    { value: '9', label: 'October' },
+    { value: '10', label: 'November' },
+    { value: '11', label: 'December' }
+  ];
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -333,7 +349,8 @@ export default function PlannerPage({ onMenuClick }) {
       r.hr_spoc?.toLowerCase().includes(search.toLowerCase());
     const matchType = !filterType || r.event_type === filterType;
     const matchRegion = !filterRegion || r.region === filterRegion;
-    return matchSearch && matchType && matchRegion;
+    const matchMonth = !filterMonth || (r.event_date && new Date(r.event_date).getMonth() === parseInt(filterMonth));
+    return matchSearch && matchType && matchRegion && matchMonth;
   });
 
   const upcomingCount = records.filter(r => r.event_date && new Date(r.event_date) >= new Date()).length;
@@ -405,8 +422,12 @@ export default function PlannerPage({ onMenuClick }) {
               <option value="">All Regions</option>
               {regions.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
-            {(search || filterType || filterRegion) && (
-              <button className="btn btn-secondary btn-sm" onClick={() => { setSearch(''); setFilterType(''); setFilterRegion(''); }}>
+            <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ width: 'auto', minWidth: 150 }}>
+              <option value="">All Months</option>
+              {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+            </select>
+            {(search || filterType || filterRegion || filterMonth) && (
+              <button className="btn btn-secondary btn-sm" onClick={() => { setSearch(''); setFilterType(''); setFilterRegion(''); setFilterMonth(''); }}>
                 <FiX /> Clear
               </button>
             )}
